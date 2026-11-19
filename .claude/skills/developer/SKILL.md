@@ -31,13 +31,14 @@ In the commands below, `taskboard` stands for
 
 ## Approval gate
 
-You may only implement tasks from a plan that a human has approved: `docs/features/<slug>/plan.md`
+You may only implement tasks from a plan that the user has approved: `docs/features/<slug>/plan.md`
 must have `status: approved` **on the default branch**. The task board enforces this. Tasks of
 unapproved plans show as `awaiting-approval`, and `claim` or `claim-milestone` fail with
-`Gate closed: …`. When that happens, **stop**. Tell the user that a human must review the plan,
-set `status: approved` in `plan.md` by hand and merge it, and then run `/developer` again. Never
-edit the status yourself, never work on an unclaimed task, and don't pass `--base` to point at an
-unapproved branch to get around the gate.
+`Gate closed: …`. When that happens, **stop** and ask the user whether they approve the plan.
+If they explicitly confirm, offer to set `status: approved` in `plan.md` on a branch and open a PR.
+You never push to the default branch, so the user merges it, and then you run `/developer`
+again. Never approve on your own initiative, never work on an unclaimed task, and don't pass
+`--base` to point at an unapproved branch to get around the gate.
 
 ## Hard rules
 

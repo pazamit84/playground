@@ -9,10 +9,11 @@ updated: <YYYY-MM-DD>
 
 # <Feature name>: Delivery Plan
 
-> **Approval gate:** `status` stays `draft` until a human reviews this plan and its task files and
-> manually sets it to `approved`. Approving this plan approves every task file in `tasks/`.
+> **Approval gate:** `status` stays `draft` until the user reviews this plan and its task files and
+> approves them, either by setting `approved` themselves or by explicitly telling Claude to.
+> Approving this plan approves every task file in `tasks/`.
 > `/developer` (the task board) refuses to claim any task until then. Any later change to the
-> plan or to a task's definition resets `status` to `draft` and needs a new human approval.
+> plan or to a task's definition resets `status` to `draft` and needs a new approval.
 > Developers setting a task's own `status: done` doesn't count as a change.
 
 Based on [architecture.md](architecture.md) v<version> and [product.md](product.md) v<version>.

@@ -15,11 +15,11 @@ Derived state of each task:
   in-progress claim branch exists on the remote
   blocked     at least one dependency is not done
   awaiting-approval  the feature's plan.md is not `status: approved` on the base branch
-                     (human approval gate: nothing can be claimed until a human approves)
+                     (approval gate: nothing can be claimed until the user approves the plan)
   available   none of the above -> can be claimed
 
 Approval gates: product.md, architecture.md and plan.md carry `status:` in their frontmatter.
-Only a human sets it to `approved`; `gate` checks it for the skills.
+It is set to `approved` only with the user's explicit approval; `gate` checks it for the skills.
 
 Run `taskboard.py --help` for commands.
 """
@@ -372,7 +372,7 @@ def pick_task_to_claim(board: Board, args: argparse.Namespace) -> Task | None:
     state = board.state_of(task)
     if state == STATE_AWAITING_APPROVAL:
         raise BoardError(f"Gate closed: {feature_document_path(task.feature, 'plan')} is not approved "
-                         "on the base branch. A human must set `status: approved` and merge it.")
+                         "on the base branch. The user must approve it and merge it.")
     if state != STATE_AVAILABLE:
         detail = f" (waiting on {', '.join(board.unmet_dependencies(task))})" if state == STATE_BLOCKED else ""
         raise BoardError(f"{task.task_id} is {state}{detail}; it cannot be claimed.")
@@ -414,7 +414,7 @@ def ensure_milestone_claimable(board: Board, open_tasks: list[Task]) -> None:
     for task in open_tasks:
         if board.state_of(task) == STATE_AWAITING_APPROVAL:
             raise BoardError(f"Gate closed: {feature_document_path(task.feature, 'plan')} is not approved "
-                             "on the base branch. A human must set `status: approved` and merge it.")
+                             "on the base branch. The user must approve it and merge it.")
         if board.state_of(task) == STATE_IN_PROGRESS:
             raise BoardError(f"{task.task_id} is already claimed by another agent; cannot claim the whole milestone.")
         external_blockers = [dep for dep in board.unmet_dependencies(task) if dep not in open_ids]
@@ -450,7 +450,7 @@ def command_mark_done(args: argparse.Namespace) -> int:
 
 
 def command_gate(args: argparse.Namespace) -> int:
-    """Exit 0 only if the given document is approved by a human (read from the working tree)."""
+    """Exit 0 only if the given document is approved (read from the working tree)."""
     relative_path = feature_document_path(args.feature, args.document)
     document_file = repo_root() / relative_path
     if not document_file.exists():
@@ -459,7 +459,7 @@ def command_gate(args: argparse.Namespace) -> int:
     status = document_status(document_file.read_text(), relative_path)
     if status != APPROVED_STATUS:
         print(f"GATE CLOSED: {relative_path} has status '{status or 'missing'}'. "
-              f"A human must review it and set `status: {APPROVED_STATUS}` before the next step can run.")
+              f"The user must review and approve it (`status: {APPROVED_STATUS}`) before the next step can run.")
         return EXIT_GATE_CLOSED
     print(f"GATE OPEN: {relative_path} is approved.")
     return 0
@@ -570,7 +570,7 @@ def build_parser() -> argparse.ArgumentParser:
     mark_done.add_argument("--feature", required=True)
     mark_done.set_defaults(handler=command_mark_done)
 
-    gate = commands.add_parser("gate", help="Check that a feature document is human-approved (exit 5 if not).")
+    gate = commands.add_parser("gate", help="Check that a feature document is approved (exit 5 if not).")
     gate.add_argument("document", choices=GATED_DOCUMENTS)
     gate.add_argument("--feature", required=True)
     gate.set_defaults(handler=command_gate)

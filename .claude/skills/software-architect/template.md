@@ -9,9 +9,9 @@ updated: <YYYY-MM-DD>
 
 # <Feature name>: Architecture Design
 
-> **Approval gate:** `status` stays `draft` until a human reviews this document and manually
-> sets it to `approved`. `/tech-lead` refuses to run until then. Any later change
-> to this document resets `status` to `draft` and needs a new human approval.
+> **Approval gate:** `status` stays `draft` until the user reviews this document and approves it,
+> either by setting `approved` themselves or by explicitly telling Claude to. `/tech-lead` refuses to
+> run until then. Any later change to this document resets `status` to `draft` and needs a new approval.
 
 ## 1. Overview
 <What is being built technically and the shape of the solution in one paragraph. Link to

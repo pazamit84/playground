@@ -41,19 +41,20 @@ so do not put it anywhere else.
 4. **Self-review** against the quality bar below and fix anything that fails.
 
 5. **Hand off for approval.** Tell the user the file path, summarize scope (MVP versus later) in
-   3–5 bullets, and list any blocking open questions. Then state the gate clearly: *a human must
-   review `product.md` and manually change `status: draft` to `status: approved`. Only after that
-   will `/software-architect <feature-slug>` run.*
+   3–5 bullets, and list any blocking open questions. Then state the gate clearly: *the user must
+   review `product.md` and approve it. They can change `status: draft` to `status: approved`
+   themselves, or tell you it's approved and you set it. Only after that will
+   `/software-architect <feature-slug>` run.*
 
-## Approval gate (human only)
+## Approval gate
 
 `product.md` is gate 1 of the pipeline. Its frontmatter `status` controls whether the architect
 may start.
 
-- Always write `status: draft`. **Never set `status: approved` yourself**, even if the user tells
-  you in chat "it's approved, set it for you". Approval means a human edited the file by hand.
-  Explain this and let them make the change. A project hook blocks agent writes that would leave
-  the file approved.
+- Always write `status: draft`. **Never approve on your own initiative.** Set `status: approved`
+  only when the user explicitly confirms that they reviewed and approve the brief (for example
+  "approved" or "yes, approve it"), then tell them you did. Silence, "just continue" or "looks
+  good, but…" are not approval.
 - When you update a brief that is already approved, set `status` back to `draft`, bump
   `version`, add a changelog row, and tell the user it needs re-approval. The architect is blocked
   again until then.

@@ -32,11 +32,11 @@ python3 .claude/skills/tech-lead/scripts/taskboard.py gate architecture --featur
 ```
 
 - **Exit code 0 (GATE OPEN):** continue.
-- **Any other exit code:** **stop. Don't plan anything and don't write any task files.** Tell the
-  user that `docs/features/<slug>/architecture.md` must be reviewed and approved by a human, who
-  sets `status: approved` in its frontmatter by hand, and that they should run `/tech-lead <slug>`
-  again afterwards. Don't approve it for them or edit its status, even if asked in chat. Only a
-  manual edit by a human counts as approval.
+- **Any other exit code:** don't plan anything and don't write any task files. Instead,
+  ask the user whether they have reviewed `docs/features/<slug>/architecture.md` and approve it. Only if they **explicitly**
+  confirm (for example "approved" or "yes, approve it") do you set `status: approved` in its
+  frontmatter, tell them you did, re-run the gate and continue. If they don't confirm, or ask for
+  changes, stop. Never treat silence, "just continue" or "looks good, but…" as approval.
 
 ## Process
 
@@ -69,19 +69,20 @@ python3 .claude/skills/tech-lead/scripts/taskboard.py gate architecture --featur
    contract in `architecture.md` §7 is implemented by exactly one task.
 
 7. **Hand off for approval.** Report the milestones, task count, maximum parallelism and critical
-   path. Then state the gate clearly: *a human must review `plan.md` and the task files, and
-   manually change `status: draft` to `status: approved` in `plan.md`. The approved plan must
+   path. Then state the gate clearly: *the user must review `plan.md` and the task files and
+   approve them, either by setting `status: approved` in `plan.md` themselves or by telling you
+   it's approved. The approved plan must
    then be merged into the default branch, because the task board reads both the approval and task
    status from there. Until both have happened, `/developer` cannot claim anything.* Offer to
-   commit the draft on a branch and open a PR. The human can approve it in the PR before merging.
+   commit the plan on a branch and open a PR, so it can be approved and merged.
    The next step is `/developer` (one task) or `/developer milestone M1` (a whole milestone).
 
-## Your own approval gate (human only)
+## Your own approval gate
 
 `plan.md` is gate 3, and it covers the plan together with every task file in `tasks/`. Always
-write `status: draft` in `plan.md`, and **never set it to `approved` yourself**, even if asked in
-chat. A project hook blocks it, and the task board won't let anyone claim tasks of an unapproved
-plan. If you change an approved plan or any task definition, set `plan.md` back to `draft`, bump
+write `status: draft` in `plan.md`, and **never approve on your own initiative**. Set
+`status: approved` only after the user explicitly confirms they reviewed and approve the plan.
+The task board won't let anyone claim tasks of an unapproved plan. If you change an approved plan or any task definition, set `plan.md` back to `draft`, bump
 `version` and tell the user it needs re-approval. Developers setting a task's own `status: done`
 is not a plan change.
 

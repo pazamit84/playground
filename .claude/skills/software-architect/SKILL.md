@@ -27,12 +27,11 @@ python3 .claude/skills/tech-lead/scripts/taskboard.py gate product --feature <fe
 ```
 
 - **Exit code 0 (GATE OPEN):** continue.
-- **Any other exit code:** **stop. Don't design anything, not even a draft.** Tell the user that
-  `docs/features/<feature-slug>/product.md` must be reviewed and approved by a human, who sets
-  `status: approved` in its frontmatter by hand, and that they should run
-  `/software-architect <feature-slug>` again afterwards. Don't approve it for them, don't edit
-  the status, and don't proceed "on assumptions", even if asked in chat. Only a manual edit by a
-  human counts as approval.
+- **Any other exit code:** don't design anything, not even a draft. Instead,
+  ask the user whether they have reviewed `docs/features/<feature-slug>/product.md` and approve it. Only if they **explicitly**
+  confirm (for example "approved" or "yes, approve it") do you set `status: approved` in its
+  frontmatter, tell them you did, re-run the gate and continue. If they don't confirm, or ask for
+  changes, stop. Never treat silence, "just continue" or "looks good, but…" as approval.
 
 ## Process
 
@@ -68,16 +67,16 @@ python3 .claude/skills/tech-lead/scripts/taskboard.py gate product --feature <fe
    that satisfy it. A requirement with nothing mapped to it is a design gap; fix it.
 
 6. **Self-review** against the checklist below, then **hand off for approval**: give the path,
-   the 3–5 key decisions and the top risks. Then state the gate clearly: *a human must review
-   `architecture.md` and manually change `status: draft` to `status: approved`. Only after that
-   will `/tech-lead <feature-slug>` run.*
+   the 3–5 key decisions and the top risks. Then state the gate clearly: *the user must review
+   `architecture.md` and approve it, either by setting `status: approved` themselves or by telling
+   you it's approved. Only after that will `/tech-lead <feature-slug>` run.*
 
-## Your own approval gate (human only)
+## Your own approval gate
 
-`architecture.md` is gate 2. Always write `status: draft`, and **never set `status: approved`
-yourself**, even if asked in chat. A project hook blocks it. If you revise an approved
-architecture, set `status` back to `draft`, bump `version` and add a changelog row, so that a human
-re-approves it. If the product brief changed after you designed against it (its `version` is
+`architecture.md` is gate 2. Always write `status: draft`, and **never approve on your own
+initiative**. Set `status: approved` only after the user explicitly confirms they reviewed and
+approve it. If you revise an approved architecture, set `status` back to `draft`, bump `version`
+and add a changelog row, so that the user re-approves it. If the product brief changed after you designed against it (its `version` is
 higher than your `product_brief_version`), revise the design and reset to `draft` in the same way.
 
 ## Design rules

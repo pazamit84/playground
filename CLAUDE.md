@@ -21,17 +21,18 @@ The four skills form a pipeline. Each one reads the previous one's output from
 | 3 | `/tech-lead <slug>` | `architecture.md`, `product.md` | `plan.md` + `tasks/T-###-*.md` |
 | 4 | `/developer [next \| T-### \| milestone M#]` | one task file | a branch and a PR |
 
-**Human approval gates.** `product.md`, `architecture.md` and `plan.md` each carry `status:` in their
-frontmatter. Agents always write `draft`. Only a human, editing the file by hand, sets
-`status: approved`, and each next skill refuses to run until the previous document is approved:
+**Approval gates.** `product.md`, `architecture.md` and `plan.md` each carry `status:` in their
+frontmatter. Agents always write `draft`. The document becomes `status: approved` either when the
+user edits it themselves, or when Claude sets it after the user **explicitly** confirms in the
+conversation that they reviewed and approve it. Each next skill refuses to run until the previous
+document is approved:
 
-- the architect and tech lead check with `taskboard.py gate <document> --feature <slug>`;
-- the task board won't claim tasks unless `plan.md` is approved on the default branch;
-- the PreToolUse hook `.claude/hooks/block-self-approval.py` (registered in `.claude/settings.json`)
-  blocks any agent write that would leave a gated document approved. This also means editing an
-  approved document requires resetting it to `draft`.
+- the architect and tech lead check with `taskboard.py gate <document> --feature <slug>`, and ask
+  the user for approval when the gate is closed;
+- the task board won't claim tasks unless `plan.md` is approved on the default branch.
 
-Never work around a closed gate, even when asked in chat.
+Never approve on your own initiative. Silence, "just continue" or "looks good, but…" are not
+approval. Editing an approved document resets it to `draft` (bump `version`) so that it is re-approved.
 
 The key design points:
 - **Task files are self-contained.** A developer agent reads only its task file, not the
