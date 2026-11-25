@@ -16,10 +16,15 @@ The four skills form a pipeline. Each one reads the previous one's output from
 
 | Step | Skill | Reads | Writes |
 |------|-------|-------|--------|
-| 1 | `/product-manager <idea>` | the user's idea, the codebase | `product.md` (requirements with IDs FR-n, NFR-n, AC-n) |
-| 2 | `/software-architect <slug>` | `product.md`, the codebase | `architecture.md` (design, contracts, mermaid diagrams) |
-| 3 | `/tech-lead <slug>` | `architecture.md`, `product.md` | `plan.md` + `tasks/T-###-*.md` |
+| 1 | `/product-manager <idea>` | the user's idea, the codebase | `product.md` (requirements with IDs FR-n, NFR-n, AC-n) + `product-summary.md` |
+| 2 | `/software-architect <slug>` | `product.md`, the codebase | `architecture.md` (design, contracts, mermaid diagrams) + `architecture-summary.md` |
+| 3 | `/tech-lead <slug>` | `architecture.md`, `product.md` | `plan.md` + `plan-summary.md` + `tasks/T-###-*.md` |
 | 4 | `/developer [next \| T-### \| milestone M#]` | one task file | a branch and a PR |
+
+**Summaries.** `product.md`, `architecture.md` and `plan.md` each have a `*-summary.md` file next
+to them: a 2–3 minute read (400–600 words) for humans. A summary is derived from its source only,
+records the source's `version` as `source_version`, and is rewritten whenever the source changes.
+It has no `status` and is not a gate. If a summary and its source disagree, the source wins.
 
 **Approval gates.** `product.md`, `architecture.md` and `plan.md` each carry `status:` in their
 frontmatter. Agents always write `draft`. The document becomes `status: approved` either when the

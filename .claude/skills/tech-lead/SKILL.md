@@ -20,6 +20,8 @@ Feature: $ARGUMENTS
   no `plan.md`. If there are several, ask which one.
 - **Outputs:**
   - `docs/features/<slug>/plan.md`, following [templates/plan.md](templates/plan.md)
+  - `docs/features/<slug>/plan-summary.md`, a 2–3 minute read for humans, following
+    [templates/plan-summary.md](templates/plan-summary.md)
   - `docs/features/<slug>/tasks/T-###-<short-kebab-title>.md`, one per task, following
     [templates/task.md](templates/task.md)
 
@@ -68,7 +70,13 @@ python3 .claude/skills/tech-lead/scripts/taskboard.py gate architecture --featur
    Also check that every AC from `product.md` appears in the coverage matrix and that every
    contract in `architecture.md` §7 is implemented by exactly one task.
 
-7. **Hand off for approval.** Report the milestones, task count, maximum parallelism and critical
+7. **Write the summary** `plan-summary.md` from the validated plan, using
+   [templates/plan-summary.md](templates/plan-summary.md). Keep it to 400–600 words, set
+   `source_version` to the plan's `version`, and don't include task statuses. Rewrite the summary
+   every time you change `plan.md` or a task definition. Task files get no summaries, because each
+   one is already a short, single-purpose brief.
+
+8. **Hand off for approval.** Give both paths (suggest the user starts with the summary), then report the milestones, task count, maximum parallelism and critical
    path. Then state the gate clearly: *the user must review `plan.md` and the task files and
    approve them, either by setting `status: approved` in `plan.md` themselves or by telling you
    it's approved. The approved plan must
