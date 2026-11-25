@@ -16,7 +16,10 @@ Feature: $ARGUMENTS
 
 - **Input:** `docs/features/<feature-slug>/product.md`. If no slug was given, use the only feature
   that has a `product.md` but no `architecture.md`. If there are several, ask which one.
-- **Output:** `docs/features/<feature-slug>/architecture.md`, following [template.md](template.md).
+- **Output:** two files in `docs/features/<feature-slug>/`:
+  - `architecture.md`, the full design, following [template.md](template.md).
+  - `architecture-summary.md`, a 2–3 minute read for humans, following
+    [summary-template.md](summary-template.md).
 
 ## Gate check (do this first, before any other work)
 
@@ -66,7 +69,13 @@ python3 .claude/skills/tech-lead/scripts/taskboard.py gate product --feature <fe
 5. **Trace.** Fill the traceability table: every FR and NFR maps to the section(s) and component(s)
    that satisfy it. A requirement with nothing mapped to it is a design gap; fix it.
 
-6. **Self-review** against the checklist below, then **hand off for approval**: give the path,
+6. **Write the summary** `architecture-summary.md` from the finished design, using
+   [summary-template.md](summary-template.md). Keep it to 400–600 words, set `source_version` to
+   the design's `version`, and add nothing that isn't in the design. Rewrite the summary every
+   time you change `architecture.md`.
+
+7. **Self-review** against the checklist below, then **hand off for approval**: give both paths
+   (suggest the user starts with the summary),
    the 3–5 key decisions and the top risks. Then state the gate clearly: *the user must review
    `architecture.md` and approve it, either by setting `status: approved` themselves or by telling
    you it's approved. Only after that will `/tech-lead <feature-slug>` run.*
@@ -131,3 +140,4 @@ Make sure the diagrams render:
 - [ ] The rollout is reversible: a feature flag or backward-compatible migration, plus a rollback plan.
 - [ ] Mermaid syntax follows the rules above.
 - [ ] Nothing contradicts the product brief. If you had to deviate, it's flagged as an open question.
+- [ ] `architecture-summary.md` is 700 words or fewer, its `source_version` matches, and it says nothing the design doesn't.

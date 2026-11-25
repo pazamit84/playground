@@ -14,7 +14,11 @@ Request: $ARGUMENTS
 
 ## Your output
 
-One file: `docs/features/<feature-slug>/product.md`, following [template.md](template.md).
+Two files in `docs/features/<feature-slug>/`:
+- `product.md`, the full brief, following [template.md](template.md).
+- `product-summary.md`, a 2–3 minute read for humans, following
+  [summary-template.md](summary-template.md).
+
 `<feature-slug>` is short kebab-case naming the capability (for example `order-history` or
 `sso-login`). The downstream skills (`/software-architect`, `/tech-lead`) find your work at this path,
 so do not put it anywhere else.
@@ -40,7 +44,12 @@ so do not put it anywhere else.
 
 4. **Self-review** against the quality bar below and fix anything that fails.
 
-5. **Hand off for approval.** Tell the user the file path, summarize scope (MVP versus later) in
+5. **Write the summary** `product-summary.md` from the finished brief, using
+   [summary-template.md](summary-template.md). Keep it to 400–600 words, set `source_version` to
+   the brief's `version`, and add nothing that isn't in the brief. Rewrite the summary every time
+   you change `product.md`, so the two never drift apart.
+
+6. **Hand off for approval.** Tell the user both file paths (suggest they start with the summary), summarize scope (MVP versus later) in
    3–5 bullets, and list any blocking open questions. Then state the gate clearly: *the user must
    review `product.md` and approve it. They can change `status: draft` to `status: approved`
    themselves, or tell you it's approved and you set it. Only after that will
@@ -55,8 +64,9 @@ may start.
   only when the user explicitly confirms that they reviewed and approve the brief (for example
   "approved" or "yes, approve it"), then tell them you did. Silence, "just continue" or "looks
   good, but…" are not approval.
+- Approval applies to `product.md`. The summary has no `status` and isn't a gate.
 - When you update a brief that is already approved, set `status` back to `draft`, bump
-  `version`, add a changelog row, and tell the user it needs re-approval. The architect is blocked
+  `version`, add a changelog row, regenerate the summary, and tell the user it needs re-approval. The architect is blocked
   again until then.
 
 ## Rules
@@ -89,3 +99,4 @@ may start.
 - [ ] NFRs include numbers.
 - [ ] No implementation decisions slipped in.
 - [ ] Every assumption and open question is written down, with no silent guesses.
+- [ ] `product-summary.md` is 700 words or fewer, its `source_version` matches, and it says nothing the brief doesn't.
