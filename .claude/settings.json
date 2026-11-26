@@ -1,0 +1,10 @@
+{
+  "extraKnownMarketplaces": {
+    "delivery-tools": {
+      "source": { "source": "github", "repo": "pazamit84/agent-delivery" }
+    }
+  },
+  "enabledPlugins": {
+    "delivery@delivery-tools": true
+  }
+}
